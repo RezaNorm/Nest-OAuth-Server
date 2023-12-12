@@ -17,6 +17,7 @@ import { ReplayDetection } from './entities/ReplayDetection.entity';
 import { InteractionsController } from './interactions/interactions.controller';
 import { AccountService } from './account/account.service';
 import { UserModule } from '../oauth/user/user.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UserModule } from '../oauth/user/user.module';
       ReplayDetection,
     ]),
     UserModule,
+    ClientModule,
   ],
   controllers: [OidcController, InteractionsController],
   providers: [OidcProviderService, AccountService],
