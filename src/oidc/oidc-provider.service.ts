@@ -36,11 +36,15 @@ export class OidcProviderService {
           return `/interaction/${interaction.uid}`;
         },
       },
-      // claims: {
-      //   openid: ['sub'],
-      //   email: ['email', 'fullName'],
-      // },
+      issueRefreshToken(ctx, client, code) {
+        return true;
+      },
+      claims: {
+        openid: ['sub'],
+        email: ['email', 'fullName'],
+      },
       features: {
+        introspection: { enabled: true },
         devInteractions: { enabled: false },
         deviceFlow: { enabled: true }, // defaults to false
         revocation: { enabled: true }, // defaults to false

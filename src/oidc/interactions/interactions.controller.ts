@@ -1,4 +1,13 @@
-import { Controller, Get, Logger, Next, Post, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  Next,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { OidcProviderService } from '../oidc-provider.service';
 import * as assert from 'assert';
@@ -28,7 +37,7 @@ export class InteractionsController {
         response,
       );
       this._logger.log(details);
-      console.log({details})
+      console.log({ details });
       const { uid, prompt, params } = details;
 
       const client = await this.oidcService.oidc.Client.find(
@@ -68,7 +77,7 @@ export class InteractionsController {
       const { uid, prompt, params } =
         await this.oidcService.oidc.interactionDetails(req, res);
 
-      console.log({uid, prompt, params})
+      console.log({ uid, prompt, params });
       assert.strictEqual(prompt.name, 'login');
       const client = await this.oidcService.oidc.Client.find(
         params.client_id as string,
@@ -93,6 +102,67 @@ export class InteractionsController {
         });
         return;
       }
+
+      const result = {
+        login: { accountId },
+      };
+
+      await this.oidcService.oidc.interactionFinished(req, res, result, {
+        mergeWithLastSubmission: false,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  @Get(':uid/signup')
+  async signupRender(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    try {
+      const { uid, prompt, params } =
+        await this.oidcService.oidc.interactionDetails(req, res);
+
+      const client = await this.oidcService.oidc.Client.find(
+        params.client_id as string,
+      );
+
+      res.render('signup', {
+        client,
+        uid,
+        details: prompt.details,
+        params: {
+          ...params,
+          login_hint: req.body.email,
+        },
+        title: 'Sign-up',
+        flash: 'Create Droplinked Account',
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  @Post(':uid/signup')
+  async signup(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    try {
+      const { uid, prompt, params } =
+        await this.oidcService.oidc.interactionDetails(req, res);
+
+      if (req.body.password[0] !== req.body.password[1])
+        throw new UnauthorizedException('passwords not match');
+
+      const accountId = await this.accountService.signup(
+        req.body.name,
+        req.body.email,
+        req.body.password[0],
+      );
 
       const result = {
         login: { accountId },
@@ -138,7 +208,7 @@ export class InteractionsController {
         });
       }
 
-      console.log({grant})
+      console.log({ grant });
       if (details.missingOIDCScope) {
         grant.addOIDCScope((details.missingOIDCScope as string[]).join(' '));
         // use grant.rejectOIDCScope to reject a subset or the whole thing

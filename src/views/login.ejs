@@ -22,18 +22,24 @@
         background-color: #F7F7F7;
         margin: 0 auto 10px;
         border-radius: 2px;
+        border: 1px;
+        border-color: #25a17e;
         box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
         overflow: hidden;
       }
 
       .login-card + .login-card {
         padding-top: 10px;
+        border: 1px;
+        border-color: #25a17e;
       }
 
       .login-card h1 {
         font-weight: 100;
         text-align: center;
         font-size: 2.3em;
+        border: 1px;
+        border-color: #25a17e;
       }
 
       .login-card h1 + p {
@@ -75,7 +81,7 @@
         border: 0px;
         color: #fff;
         text-shadow: 0 1px rgba(0,0,0,0.1);
-        background-color: #4d90fe;
+        background-color: #25a17e;
       }
 
       .login-card a {
@@ -91,6 +97,7 @@
         width: 100%;
         text-align: center;
         font-size: 12px;
+        color: #25a17e;
       }
 
       .login-client-image img {
@@ -131,12 +138,13 @@
         <p><%= flash %></p>
       <% } %>
       <form autocomplete="off" action="/interaction/<%= uid %>/login" method="post">
-        <input required type="email" name="email" placeholder="Enter an email" <% if (!params.login_hint) { %>autofocus="on"<% } else { %> value="<%= params.login_hint %>" <% } %>>
-        <input required type="password" name="password" placeholder="and password" <% if (params.login_hint) { %>autofocus="on"<% } %>>
+        <input required type="email" name="email" placeholder="Email" <% if (!params.login_hint) { %>autofocus="on"<% } else { %> value="<%= params.login_hint %>" <% } %>>
+        <input required type="password" name="password" placeholder="Password" <% if (params.login_hint) { %>autofocus="on"<% } %>>
 
         <button type="submit" class="login login-submit">Sign-in</button>
       </form>
       <div class="login-help">
+        <a href="/interaction/<%= uid %>/signup">[ Signup ]</a> 
         <a href="/interaction/<%= uid %>/abort">[ Cancel ]</a>
         <% if (client.tosUri) { %>
           <a href="<%= client.tosUri %>">[ Terms of Service ]</a>

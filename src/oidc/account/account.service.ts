@@ -4,11 +4,10 @@ import { FindAccount } from 'oidc-provider';
 
 @Injectable()
 export class AccountService {
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   findAccount: FindAccount = async (ctx, id: string) => {
-    console.log({ id })
+    console.log({ id });
     const user = await this.userService.findOne(id);
 
     if (!user) {
@@ -29,6 +28,12 @@ export class AccountService {
 
   async authenticate(email, password) {
     const user = await this.userService.authenticate(email, password);
+
+    return user.id;
+  }
+
+  async signup(fullName, email, password) {
+    const user = await this.userService.register({ fullName, email, password });
 
     return user.id;
   }
