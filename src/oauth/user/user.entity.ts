@@ -1,5 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 @Entity()
 export class User {
@@ -18,6 +24,9 @@ export class User {
     nullable: false,
   })
   hash: string;
+
+  @Column({ nullable: false, type: 'text' })
+  clientId: string;
 }
 
 export class RegisterUserDto {
@@ -39,6 +48,9 @@ export class RegisterUserDto {
    * **/
   @Matches(/^(?=.*[A-Z].*)(?=.*[!@#$&*^()\-_])(?=.*[0-9].*)(?=.*[a-z].*).{8,}$/)
   password: string;
+
+  @IsString()
+  clientId: string;
 }
 
 export class LoginDto {

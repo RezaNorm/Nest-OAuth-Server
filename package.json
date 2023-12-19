@@ -32,6 +32,7 @@
     "@nestjs/swagger": "^4.8.2",
     "@nestjs/typeorm": "^7.1.5",
     "@types/oidc-provider": "^7.4.1",
+    "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",

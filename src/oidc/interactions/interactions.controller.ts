@@ -155,13 +155,15 @@ export class InteractionsController {
       const { uid, prompt, params } =
         await this.oidcService.oidc.interactionDetails(req, res);
 
-      if (req.body.password[0] !== req.body.password[1])
-        throw new UnauthorizedException('passwords not match');
+      const client = await this.oidcService.oidc.Client.find(
+        params.client_id as string,
+      );
 
       const accountId = await this.accountService.signup(
         req.body.name,
         req.body.email,
-        req.body.password[0],
+        req.body.password,
+        client.clientId
       );
 
       const result = {
